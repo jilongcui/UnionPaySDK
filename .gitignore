@@ -69,5 +69,8 @@ typings/
 
 # that annoying mac thing
 .DS_Store
-# ingore client name 
-mr-miner-front
+
+
+tests/
+
+
