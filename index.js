@@ -38,12 +38,18 @@ class UnionPaySDK {
 
         this.signatureGenerate(this.formData, privateKey);
 
+        var address = 'Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page';
         await request.post('https://gateway.test.95516.com/gateway/api/frontTransReq.do',
             { form: this.formData },
         ).catch((err) => {
-            console.log()
+            if (err['statusCode'] !== 302) {
+                throw Error('Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page');
+            }
+
+            address = err.response.headers.location;
         });
-        console.log('after request');
+
+        return address;
     }
 
     hexToDecimal(hexStr) {
