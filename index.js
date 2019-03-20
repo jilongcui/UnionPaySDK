@@ -14,12 +14,12 @@ class UnionPaySDK {
     constructor(merId, certPath, password) {
         this.merId = merId;
 
-        const result = this.parseSignedDataFromPfx(certPath, password);
+        const result = UnionPaySDK.parseSignedDataFromPfx(certPath, password);
         const certificate = result['certificate'];
 
         this.privateKey = result['privateKey'];
 
-        this.certId = this.parseCertData(certificate);
+        this.certId = UnionPaySDK.parseCertData(certificate);
     }
 
     /**
@@ -56,7 +56,7 @@ class UnionPaySDK {
             'certId': this.certId
         };
 
-        this.signatureGenerate(formData, this.privateKey);
+        UnionPaySDK.signatureGenerate(formData, this.privateKey);
 
         var address = 'Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page';
 
@@ -96,16 +96,16 @@ class UnionPaySDK {
             'certId': this.certId,
         };
 
-        this.signatureGenerate(formData, this.privateKey);
+        UnionPaySDK.signatureGenerate(formData, this.privateKey);
 
         const response = await request.post('https://gateway.95516.com/gateway/api/queryTrans.do', { form: formData });
 
-        const { respCode, txnAmt } = this.QueryStringToJSON(response);
+        const { respCode, txnAmt } = UnionPaySDK.QueryStringToJSON(response);
 
         return { status: respCode === '00', amount: txnAmt };
     }
 
-    QueryStringToJSON(query) {
+    static QueryStringToJSON(query) {
         var pairs = query.slice(1).split('&');
 
         var result = {};
@@ -117,11 +117,11 @@ class UnionPaySDK {
         return JSON.parse(JSON.stringify(result));
     }
 
-    hexToDecimal(hexStr) {
+    static hexToDecimal(hexStr) {
         return BigInt(hexStr, 16).toString();
     }
 
-    parseSignedDataFromPfx(path, password) {
+    static parseSignedDataFromPfx(path, password) {
         const extractedData = wopenssl.pkcs12.extract(path, password);
         return {
             certificate: extractedData.certificate,
@@ -129,13 +129,13 @@ class UnionPaySDK {
         };
     }
 
-    parseCertData(certificate) {
+    static parseCertData(certificate) {
         const certData = wopenssl.x509.parseCert(certificate);
-        const certId = this.hexToDecimal(certData.serial);
+        const certId = UnionPaySDK.hexToDecimal(certData.serial);
         return certId;
     }
 
-    createLinkString(params, encode, status) {
+    static createLinkString(params, encode, status) {
         let ks;
         let str = '';
         if (status === true) {
@@ -159,10 +159,10 @@ class UnionPaySDK {
         return str;
     }
 
-    signatureGenerate(params, privateKey) {
+    static signatureGenerate(params, privateKey) {
         const newObj = params;
         if (Object.prototype.toString(params) === '[object Object]' && typeof privateKey === 'string') {
-            const prestr = this.createLinkString(params, true, true);
+            const prestr = UnionPaySDK.createLinkString(params, true, true);
 
             const sha1 = crypto.createHash('sha256');
             sha1.update(prestr, 'utf8');
