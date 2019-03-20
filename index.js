@@ -59,8 +59,43 @@ class UnionPaySDK {
         return address;
     }
 
-    async checkOrder(certPath, password, ) {
+    async checkOrder(orderId, txnTime) {
+        const formData = {
+            'version': '5.1.0',
+            'encoding': 'UTF-8',
+            'signMethod': '01',
+            'txnType': '00',
+            'txnSubType': '00',
+            'bizType': '000201',
 
+            'merId': this.merId,
+            'accessType': '0',
+
+            'txnTime': txnTime,
+            'orderId': orderId,
+
+            'certId': this.certId,
+        };
+
+        this.signatureGenerate(formData, this.privateKey);
+
+        const response = await request.post('https://gateway.95516.com/gateway/api/queryTrans.do', { form: formData });
+
+        const { respCode, txnAmt } = this.QueryStringToJSON(response);
+
+        return { status: respCode === '00', amount: txnAmt };
+    }
+
+    QueryStringToJSON(query) {
+        var pairs = query.slice(1).split('&');
+
+        var result = {};
+        pairs.forEach(function (pair) {
+            pair = pair.split('=');
+            result[pair[0]] = decodeURIComponent(pair[1] || '');
+        });
+
+        return JSON.parse(JSON.stringify(result));
     }
 
     hexToDecimal(hexStr) {
