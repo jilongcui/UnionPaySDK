@@ -73,6 +73,11 @@ class UnionPaySDK {
         return address;
     }
 
+    /**
+     * 
+     * @param {string} orderId OrderId of the transaction
+     * @param {string} txnTime Transaction time when sending the transaction
+     */
     async checkOrder(orderId, txnTime) {
         const formData = {
             'version': '5.1.0',
