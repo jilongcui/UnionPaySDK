@@ -16,6 +16,14 @@ class UnionPaySDK {
         this.certId = this.parseCertData(certificate);
     }
 
+    /**
+     * 
+     * @param {string} orderId Custom provided order id
+     * @param {string} txnAmt The amount of the transaction in FEN
+     * @param {string} backUrl The URL where UnionPay will send notification to
+     * @param {string} frontUrl Merchandise return URL
+     * @returns {string} Address of payment URL
+     */
     async createOrder(orderId, txnAmt, backUrl = 'http://www.google.com', frontUrl = 'http://www.baidu.com') {
 
         const formData = {
