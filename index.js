@@ -5,6 +5,12 @@ const crypto = require('crypto');
 const request = require('request-promise');
 
 class UnionPaySDK {
+    /**
+     * 
+     * @param {string} merId MerId provided by UnionPay
+     * @param {string} certPath File path where Certificate file is stored(.pfx)
+     * @param {string} password Password for Provided Certificate
+     */
     constructor(merId, certPath, password) {
         this.merId = merId;
 
