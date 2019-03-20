@@ -1,5 +1,5 @@
 {
-  "name": "UnionPaySDK",
+  "name": "node-unionpaysdk",
   "version": "1.0.0",
   "description": "A UnionPay SDK written by Node.JS",
   "main": "index.js",
@@ -8,7 +8,6 @@
     "moment-timezone": "^0.5.23",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "sync-request": "^6.1.0",
     "wopenssl": "^0.3.1"
   },
   "devDependencies": {},
@@ -20,8 +19,8 @@
     "url": "git+https://github.com/xiangj1/UnionPaySDK.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Xiang Jiang",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/xiangj1/UnionPaySDK/issues"
   },
