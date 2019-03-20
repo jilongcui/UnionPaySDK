@@ -5,8 +5,20 @@ const crypto = require('crypto');
 const request = require('request-promise');
 
 class UnionPaySDK {
-    constructor(merId, orderId, backUrl, frontUrl, txnAmt) {
-        this.formData = {
+    constructor(merId, certPath, password) {
+        this.merId = merId;
+
+        const result = this.parseSignedDataFromPfx(certPath, password);
+        const certificate = result['certificate'];
+
+        this.privateKey = result['privateKey'];
+
+        this.certId = this.parseCertData(certificate);
+    }
+
+    async createOrder(orderId, txnAmt, backUrl = 'http://www.google.com', frontUrl = 'http://www.baidu.com') {
+
+        const formData = {
             'bizType': '000201',
             'txnSubType': '01',
             'orderId': orderId,
@@ -20,27 +32,22 @@ class UnionPaySDK {
             'version': '5.1.0',
             'accessType': '0',
             'txnTime': `${moment().tz("Asia/Shanghai").format('YYYYMMDDHHmmss')}`,
-            'merId': merId,
+            'merId': this.merId,
             'payTimeout': `${moment().tz("Asia/Shanghai").add(10, 'minutes').format('YYYYMMDDHHmmss')}`,
             'currencyCode': '156',
             'signMethod': '01',
             'txnAmt': txnAmt,
-            'riskRateInfo': '{commodityName=测试商品名称}'
+            'riskRateInfo': '{commodityName=测试商品名称}',
+
+            'certId': this.certId
         };
-    }
 
-    async createOrder(certPath, password) {
-        const result = this.parseSignedDataFromPfx(certPath, password);
-        const { privateKey } = result;
-        const { certificate } = result;
-
-        this.formData.certId = this.parseCertData(certificate);
-
-        this.signatureGenerate(this.formData, privateKey);
+        this.signatureGenerate(formData, this.privateKey);
 
         var address = 'Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page';
+
         await request.post('https://gateway.test.95516.com/gateway/api/frontTransReq.do',
-            { form: this.formData },
+            { form: formData },
         ).catch((err) => {
             if (err['statusCode'] !== 302) {
                 throw Error('Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page');
@@ -50,6 +57,10 @@ class UnionPaySDK {
         });
 
         return address;
+    }
+
+    async checkOrder(certPath, password, ) {
+
     }
 
     hexToDecimal(hexStr) {
