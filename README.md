@@ -33,4 +33,4 @@ A UnionPay SDK written by Node.JS
     const txnTime = '20190315091142';
     const result = await unionPaySDK.checkOrder(orderId, txnTime);
 
-
+### More functionalities coming soon...
