@@ -10,8 +10,9 @@ class UnionPaySDK {
      * @param {string} merId MerId provided by UnionPay
      * @param {string} certPath File path where Certificate file is stored(.pfx)
      * @param {string} password Password for Provided Certificate
+     * @param {boolean} test_env Default to false
      */
-    constructor(merId, certPath, password) {
+    constructor(merId, certPath, password, test_env = false) {
         this.merId = merId;
 
         const result = UnionPaySDK.parseSignedDataFromPfx(certPath, password);
@@ -20,6 +21,15 @@ class UnionPaySDK {
         this.privateKey = result['privateKey'];
 
         this.certId = UnionPaySDK.parseCertData(certificate);
+
+        if (test_env) {
+            this.create_order_url = 'https://gateway.test.95516.com/gateway/api/frontTransReq.do';
+            this.check_order_url = 'https://gateway.test.95516.com/gateway/api/queryTrans.do'
+        } else {
+            this.create_order_url = 'https://gateway.95516.com/gateway/api/frontTransReq.do';
+            this.check_order_url = 'https://gateway.95516.com/gateway/api/queryTrans.do'
+        }
+
     }
 
     /**
@@ -60,7 +70,7 @@ class UnionPaySDK {
 
         var address = 'Fail to Fetch transaction Address! Please send an Email to me or create a issue at Github page';
 
-        await request.post('https://gateway.test.95516.com/gateway/api/frontTransReq.do',
+        await request.post(this.create_order_url,
             { form: formData },
         ).catch((err) => {
             if (err['statusCode'] !== 302) {
@@ -98,7 +108,7 @@ class UnionPaySDK {
 
         UnionPaySDK.signatureGenerate(formData, this.privateKey);
 
-        const response = await request.post('https://gateway.95516.com/gateway/api/queryTrans.do', { form: formData });
+        const response = await request.post(this.check_order_url, { form: formData });
 
         const { respCode, txnAmt } = UnionPaySDK.QueryStringToJSON(response);
 
