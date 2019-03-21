@@ -2,8 +2,13 @@
 
 A UnionPay SDK written by Node.JS
 
+**IMPORTANT: Please Use node@8.9.0 !**
+
 ## To Install
-`npm install unionpaysdk-node`
+    nvm install 8.9.0
+    nvm use 8.9.0
+    npm install unionpaysdk-node
+
 
 ## To create order (This is an async function)
     const UnionPaySDK = require('unionpaysdk-node');
