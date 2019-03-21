@@ -18,7 +18,11 @@
     "type": "git",
     "url": "git+https://github.com/xiangj1/UnionPaySDK.git"
   },
-  "keywords": [],
+  "keywords": [
+    "unionpay",
+    "union pay",
+    "unionpaysdk"
+  ],
   "author": "Xiang Jiang",
   "license": "MIT",
   "bugs": {
