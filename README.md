@@ -7,7 +7,7 @@ A UnionPay SDK written by Node.JS
 ## To Install
     nvm install 8.9.0
     nvm use 8.9.0
-    npm install unionpaysdk-node
+    npm install node-unionpaysdk
 
 
 ## To create order (This is an async function)
@@ -44,7 +44,7 @@ A UnionPay SDK written by Node.JS
 
     (async function () {
         /* Example Response: { status: true, amount: 100 } */
-        console.log(await unionPaySDK.checkOrder(orderId, txnAmt));
+        console.log(await unionPaySDK.checkOrder(orderId, txnTime));
     })()
 
 ### More functionalities coming soon...
